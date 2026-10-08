@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Add Student - Admin{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('admin_students') }}" class="text-decoration-none text-muted small">
+        <i class="bi bi-arrow-left"></i> Back to Students
+    </a>
+    <h3 class="fw-bold mt-1 text-dark">Add New Student</h3>
+</div>
+
+<div class="row">
+    <div class="col-12 col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-person-plus text-primary me-2"></i>Student Registration Form
+                </h5>
+            </div>
+            <div class="content-card-body">
+                <form action="{{ url_for('admin_add_student') }}" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label fw-semibold">Student Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Rahul Kumar" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="student_id" class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="student_id" name="student_id" placeholder="e.g. STU001" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="class_name" class="form-label fw-semibold">Class / Grade <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="class_name" name="class" placeholder="e.g. III" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="section" class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="section" name="section" placeholder="e.g. B" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="parent_id" class="form-label fw-semibold">Assign Parent</label>
+                            <select class="form-select" id="parent_id" name="parent_id">
+                                <option value="">-- Select Parent (Optional) --</option>
+                                {% for parent in parents %}
+                                <option value="{{ parent._id }}">{{ parent.name }} ({{ parent.email }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Choose the parent account linked to this student.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="teacher_id" class="form-label fw-semibold">Assign Teacher</label>
+                            <select class="form-select" id="teacher_id" name="teacher_id">
+                                <option value="">-- Select Teacher (Optional) --</option>
+                                {% for teacher in teachers %}
+                                <option value="{{ teacher._id }}">{{ teacher.name }} ({{ teacher.email }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Choose the teacher responsible for this student.</div>
+                        </div>
+
+                        <div class="col-12 mt-4 pt-2 border-top d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i> Save Student
+                            </button>
+                            <a href="{{ url_for('admin_students') }}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+        <div class="content-card">
+            <div class="content-card-header bg-light">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-lightbulb text-warning me-2"></i>Quick Guide</h6>
+            </div>
+            <div class="content-card-body small text-muted">
+                <p><strong>Student ID:</strong> Should be a unique identifier like STU001, STU002.</p>
+                <p><strong>Parent & Teacher Assignment:</strong> Linking parents and teachers enables automated dashboards, attendance tracking, marks entry, and direct messaging between them.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

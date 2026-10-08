@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Teachers - Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Teacher Management</h3>
+        <p class="text-muted mb-0">Manage teaching faculty accounts and classroom permissions</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Add Teacher Form Card -->
+    <div class="col-12 col-lg-4">
+        <div class="content-card">
+            <div class="content-card-header bg-light">
+                <h6 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-person-plus-fill text-primary me-2"></i>Add New Teacher
+                </h6>
+            </div>
+            <div class="content-card-body">
+                <form action="{{ url_for('admin_add_teacher') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold small">Teacher Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="e.g. John Doe" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold small">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="e.g. teacher@gmail.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold small">Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Minimum 6 characters" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-portal w-100">
+                        <i class="bi bi-check-circle me-1"></i> Register Teacher
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers List Card -->
+    <div class="col-12 col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-person-video3 text-primary me-2"></i>Active Faculty List ({{ teachers | length }})
+                </h5>
+            </div>
+            <div class="content-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Assigned Students</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if teachers %}
+                                {% for teacher in teachers %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; font-size: 0.85rem; font-weight: 600;">
+                                                {{ teacher.name[:1] | upper }}
+                                            </div>
+                                            <span class="fw-bold text-dark">{{ teacher.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="text-muted">{{ teacher.email }}</span></td>
+                                    <td>
+                                        <span class="badge bg-light text-primary border fw-semibold">
+                                            {{ teacher.student_count }} Students
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form action="{{ url_for('admin_delete_teacher', teacher_id=teacher._id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger btn-confirm-delete" data-item-name="Teacher {{ teacher.name }}" title="Delete Teacher">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No teachers registered yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

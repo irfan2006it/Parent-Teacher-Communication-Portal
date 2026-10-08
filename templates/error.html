@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Error {{ error_code }} - EduConnect Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-7 col-lg-6 text-center">
+        <div class="card shadow-sm border-0 rounded-4 p-5">
+            <div class="display-1 text-primary fw-bold mb-3">
+                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+            </div>
+            <h2 class="fw-bold mb-2 text-dark">{{ error_code }} - {{ error_title }}</h2>
+            <p class="text-muted mb-4 fs-6">
+                {{ error_message }}
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('index') }}" class="btn btn-primary px-4 py-2 rounded-pill">
+                    <i class="bi bi-house-door-fill me-1"></i> Return to Portal Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

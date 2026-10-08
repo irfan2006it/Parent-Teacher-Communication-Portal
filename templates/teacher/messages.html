@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Messages with Parents - Teacher{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Parent–Teacher Communications</h3>
+        <p class="text-muted mb-0">Direct messaging with parents of assigned students</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Conversation Threads List -->
+    <div class="col-12 col-md-4">
+        <div class="content-card">
+            <div class="content-card-header bg-light">
+                <h6 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-people-fill text-primary me-2"></i>Students & Parents
+                </h6>
+            </div>
+            <div class="list-group list-group-flush" style="max-height: 520px; overflow-y: auto;">
+                {% if threads %}
+                    {% for th in threads %}
+                    <a href="{{ url_for('teacher_messages', student_id=th.student_id) }}" 
+                       class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 {% if active_student_id == th.student_id %}bg-light border-start border-4 border-primary{% endif %}">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; flex-shrink: 0;">
+                            {{ th.student_name[:1] | upper }}
+                        </div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold text-truncate text-dark">{{ th.student_name }}</h6>
+                                {% if th.unread_count > 0 %}
+                                <span class="badge bg-danger rounded-pill">{{ th.unread_count }}</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted d-block text-truncate">
+                                <i class="bi bi-person-heart text-danger me-1"></i>Parent: {{ th.parent_name or 'Unlinked' }}
+                            </small>
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-4 text-center text-muted small">
+                        No students with registered parents assigned to you.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Chat Box -->
+    <div class="col-12 col-md-8">
+        {% if current_thread %}
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px;">
+                        {{ current_thread.student_name[:1] | upper }}
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-dark">{{ current_thread.student_name }} (Class {{ current_thread.student_class }}-{{ current_thread.student_section }})</h6>
+                        <small class="text-muted">Parent: <strong>{{ current_thread.parent_name }}</strong> ({{ current_thread.parent_email }})</small>
+                    </div>
+                </div>
+                <span class="badge bg-light text-dark border font-monospace">{{ current_thread.student_id }}</span>
+            </div>
+
+            <!-- Chat Message Bubbles -->
+            <div class="chat-messages" id="chatMessages">
+                {% if messages %}
+                    {% for msg in messages %}
+                        {% if msg.sender_id|string == current_user.id|string %}
+                        <!-- Outgoing Message from Teacher -->
+                        <div class="chat-bubble sent">
+                            <div class="chat-sender-name text-white-50">You (Teacher)</div>
+                            <div>{{ msg.message }}</div>
+                            <div class="chat-meta">
+                                <span>{{ msg.timestamp }}</span>
+                                <i class="bi bi-check2-all"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Incoming Message from Parent -->
+                        <div class="chat-bubble received">
+                            <div class="chat-sender-name text-primary">{{ current_thread.parent_name }} (Parent)</div>
+                            <div>{{ msg.message }}</div>
+                            <div class="chat-meta">
+                                <span>{{ msg.timestamp }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted my-auto py-5">
+                        <i class="bi bi-chat-quote display-6 text-secondary mb-2 d-block"></i>
+                        No messages exchanged yet with {{ current_thread.parent_name }}.<br>
+                        Send a message below to start the conversation.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-bar">
+                <form action="{{ url_for('teacher_send_message') }}" method="POST" class="d-flex gap-2">
+                    <input type="hidden" name="student_id" value="{{ current_thread.student_id }}">
+                    <input type="hidden" name="receiver_id" value="{{ current_thread.parent_id }}">
+                    <input type="text" class="form-control" name="message" placeholder="Type your reply to {{ current_thread.parent_name }}..." required autocomplete="off">
+                    <button type="submit" class="btn btn-primary px-4 d-flex align-items-center gap-1">
+                        <i class="bi bi-send-fill"></i> <span>Send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="content-card p-5 text-center text-muted">
+            <i class="bi bi-chat-dots display-4 d-block mb-3 text-secondary"></i>
+            <h5>Select a Conversation</h5>
+            <p class="mb-0">Choose a student/parent thread from the list on the left to view and send messages.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

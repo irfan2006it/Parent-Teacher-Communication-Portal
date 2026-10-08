@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - Parent–Teacher Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Teacher Dashboard</h3>
+        <p class="text-muted mb-0">Welcome back, {{ current_user.name }}. Classroom management and parent communications.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('teacher_attendance') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-calendar-check me-1"></i> Mark Attendance
+        </a>
+        <a href="{{ url_for('teacher_marks') }}" class="btn btn-accent btn-sm">
+            <i class="bi bi-plus-circle me-1"></i> Add Marks
+        </a>
+    </div>
+</div>
+
+<!-- Teacher Metric Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="stat-card primary p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">My Students</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ assigned_students_count }}</h2>
+                <small class="text-primary"><a href="{{ url_for('teacher_students') }}" class="text-decoration-none">View roster &rarr;</a></small>
+            </div>
+            <div class="stat-icon primary">
+                <i class="bi bi-people-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="stat-card success p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Today's Attendance</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ today_attendance_count }}</h2>
+                <small class="text-success"><a href="{{ url_for('teacher_attendance') }}" class="text-decoration-none">Review attendance &rarr;</a></small>
+            </div>
+            <div class="stat-icon success">
+                <i class="bi bi-calendar2-check-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="stat-card accent p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Parent Messages</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ total_messages_count }}</h2>
+                <small class="text-warning"><a href="{{ url_for('teacher_messages') }}" class="text-decoration-none">Open inbox &rarr;</a></small>
+            </div>
+            <div class="stat-icon accent">
+                <i class="bi bi-chat-quote-fill"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Assigned Students Roster Preview -->
+    <div class="col-12 col-lg-7">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-mortarboard me-2 text-primary"></i>Assigned Students
+                </h5>
+                <a href="{{ url_for('teacher_students') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="content-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Class & Sec</th>
+                                <th>Parent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if students %}
+                                {% for stu in students %}
+                                <tr>
+                                    <td><span class="badge bg-light text-dark border font-monospace">{{ stu.student_id }}</span></td>
+                                    <td class="fw-bold text-dark">{{ stu.name }}</td>
+                                    <td>Class {{ stu.class }} - {{ stu.section }}</td>
+                                    <td>{{ stu.parent_name or 'Unlinked' }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No students assigned to your account yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Parent Messages Preview -->
+    <div class="col-12 col-lg-5">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-chat-left-dots text-secondary me-2"></i>Recent Messages
+                </h5>
+                <a href="{{ url_for('teacher_messages') }}" class="btn btn-sm btn-outline-secondary">Reply</a>
+            </div>
+            <div class="content-card-body p-3">
+                {% if recent_messages %}
+                    <div class="d-flex flex-column gap-3">
+                        {% for msg in recent_messages %}
+                        <div class="p-2 border rounded bg-light">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-dark small">{{ msg.sender_name }}</span>
+                                <small class="text-muted" style="font-size: 0.75rem;">{{ msg.timestamp }}</small>
+                            </div>
+                            <p class="mb-1 text-muted small text-truncate">{{ msg.message }}</p>
+                            <small class="badge bg-white text-secondary border">Student: {{ msg.student_name or msg.student_id }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center text-muted py-4 small">
+                        <i class="bi bi-inbox display-6 d-block mb-2 text-secondary"></i>
+                        No parent messages yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

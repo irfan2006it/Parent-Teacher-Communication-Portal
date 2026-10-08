@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Parent–Teacher Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Admin Overview</h3>
+        <p class="text-muted mb-0">System administration and institutional record management</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin_add_student') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus-fill me-1"></i> Add Student
+        </a>
+        <a href="{{ url_for('admin_teachers') }}" class="btn btn-portal btn-sm">
+            <i class="bi bi-person-badge-fill me-1"></i> Add Teacher
+        </a>
+        <a href="{{ url_for('admin_parents') }}" class="btn btn-accent btn-sm">
+            <i class="bi bi-person-heart me-1"></i> Add Parent
+        </a>
+    </div>
+</div>
+
+<!-- Key Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="stat-card primary p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Total Students</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ total_students }}</h2>
+                <small class="text-primary"><a href="{{ url_for('admin_students') }}" class="text-decoration-none">Manage students &rarr;</a></small>
+            </div>
+            <div class="stat-icon primary">
+                <i class="bi bi-people-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="stat-card secondary p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Total Teachers</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ total_teachers }}</h2>
+                <small class="text-primary"><a href="{{ url_for('admin_teachers') }}" class="text-decoration-none">Manage teachers &rarr;</a></small>
+            </div>
+            <div class="stat-icon secondary">
+                <i class="bi bi-person-video3"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="stat-card accent p-3 d-flex align-items-center justify-content-between">
+            <div>
+                <span class="text-muted small fw-semibold text-uppercase">Total Parents</span>
+                <h2 class="fw-bold text-dark mb-0 mt-1">{{ total_parents }}</h2>
+                <small class="text-primary"><a href="{{ url_for('admin_parents') }}" class="text-decoration-none">Manage parents &rarr;</a></small>
+            </div>
+            <div class="stat-icon accent">
+                <i class="bi bi-person-heart"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Students Table Preview -->
+<div class="content-card">
+    <div class="content-card-header">
+        <h5 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-mortarboard me-2 text-primary"></i>Enrolled Students
+        </h5>
+        <a href="{{ url_for('admin_students') }}" class="btn btn-outline-primary btn-sm">View All Students</a>
+    </div>
+    <div class="content-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Class & Sec</th>
+                        <th>Parent</th>
+                        <th>Assigned Teacher</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if students %}
+                        {% for stu in students[:5] %}
+                        <tr>
+                            <td><span class="badge bg-light text-dark border font-monospace">{{ stu.student_id }}</span></td>
+                            <td class="fw-bold text-dark">{{ stu.name }}</td>
+                            <td>Class {{ stu.class }} - {{ stu.section }}</td>
+                            <td>{{ stu.parent_name or 'Not Assigned' }}</td>
+                            <td>{{ stu.teacher_name or 'Not Assigned' }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('admin_edit_student', student_id=stu._id) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No students enrolled yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

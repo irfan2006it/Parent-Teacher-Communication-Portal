@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Students - Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Student Management</h3>
+        <p class="text-muted mb-0">View, register, edit, and assign students to teachers and parents</p>
+    </div>
+    <a href="{{ url_for('admin_add_student') }}" class="btn btn-primary">
+        <i class="bi bi-person-plus-fill me-1"></i> Add New Student
+    </a>
+</div>
+
+<div class="content-card">
+    <div class="content-card-header">
+        <h5 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-people me-2 text-primary"></i>All Students ({{ students | length }})
+        </h5>
+    </div>
+    <div class="content-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Section</th>
+                        <th>Parent</th>
+                        <th>Teacher</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if students %}
+                        {% for stu in students %}
+                        <tr>
+                            <td><span class="badge bg-light text-dark border font-monospace">{{ stu.student_id }}</span></td>
+                            <td class="fw-bold text-dark">{{ stu.name }}</td>
+                            <td>{{ stu.class }}</td>
+                            <td>{{ stu.section }}</td>
+                            <td>
+                                {% if stu.parent_name %}
+                                    <span class="text-dark"><i class="bi bi-person-heart text-danger me-1"></i>{{ stu.parent_name }}</span>
+                                {% else %}
+                                    <span class="text-muted fst-italic">None</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if stu.teacher_name %}
+                                    <span class="text-dark"><i class="bi bi-person-workspace text-primary me-1"></i>{{ stu.teacher_name }}</span>
+                                {% else %}
+                                    <span class="text-muted fst-italic">None</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ url_for('admin_edit_student', student_id=stu._id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit Student">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <form action="{{ url_for('admin_delete_student', student_id=stu._id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-confirm-delete" data-item-name="{{ stu.name }}" title="Delete Student">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-person-x display-6 d-block mb-2 text-secondary"></i>
+                                No students added yet. Click "Add New Student" to get started.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

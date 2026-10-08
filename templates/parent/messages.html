@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Messages with Teacher - Parent{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Teacher Messaging Portal</h3>
+        <p class="text-muted mb-0">Direct communication with {{ child.name }}'s teacher</p>
+    </div>
+</div>
+
+{% if child and teacher %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="profile-avatar mb-0" style="width: 40px; height: 40px; font-size: 1.1rem;">
+                        {{ teacher.name[:1] | upper }}
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-dark">{{ teacher.name }} (Class Teacher)</h6>
+                        <small class="text-muted">In regards to: <strong>{{ child.name }}</strong> (Class {{ child.class }}-{{ child.section }})</small>
+                    </div>
+                </div>
+                <span class="badge bg-light text-primary border"><i class="bi bi-person-workspace me-1"></i>Teacher</span>
+            </div>
+
+            <!-- Chat Messages Log -->
+            <div class="chat-messages" id="chatMessages">
+                {% if messages %}
+                    {% for msg in messages %}
+                        {% if msg.sender_id|string == current_user.id|string %}
+                        <!-- Outgoing Message from Parent -->
+                        <div class="chat-bubble sent">
+                            <div class="chat-sender-name text-white-50">You (Parent)</div>
+                            <div>{{ msg.message }}</div>
+                            <div class="chat-meta">
+                                <span>{{ msg.timestamp }}</span>
+                                <i class="bi bi-check2"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Incoming Message from Teacher -->
+                        <div class="chat-bubble received">
+                            <div class="chat-sender-name text-primary">{{ teacher.name }} (Teacher)</div>
+                            <div>{{ msg.message }}</div>
+                            <div class="chat-meta">
+                                <span>{{ msg.timestamp }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted my-auto py-5">
+                        <i class="bi bi-chat-heart display-6 text-primary mb-2 d-block"></i>
+                        No prior messages between you and Teacher {{ teacher.name }}.<br>
+                        Have a question regarding {{ child.name }}? Send a message below.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Chat Message Input -->
+            <div class="chat-input-bar">
+                <form action="{{ url_for('parent_send_message') }}" method="POST" class="d-flex gap-2">
+                    <input type="text" class="form-control" name="message" placeholder="Ask a question or send an inquiry to {{ teacher.name }}..." required autocomplete="off">
+                    <button type="submit" class="btn btn-primary px-4 d-flex align-items-center gap-1">
+                        <i class="bi bi-send-fill"></i> <span>Send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif not child %}
+<div class="content-card p-5 text-center text-muted">
+    <i class="bi bi-person-x display-5 d-block mb-3"></i>
+    <h5>No Child Associated</h5>
+    <p class="mb-0">A student must be linked to your parent account before you can message their teacher.</p>
+</div>
+{% elif not teacher %}
+<div class="content-card p-5 text-center text-muted">
+    <i class="bi bi-person-x display-5 d-block mb-3"></i>
+    <h5>No Teacher Assigned</h5>
+    <p class="mb-0">Your child {{ child.name }} does not currently have an assigned teacher in the system.</p>
+</div>
+{% endif %}
+{% endblock %}

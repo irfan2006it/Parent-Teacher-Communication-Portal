@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - Parent–Teacher Communication Portal{% endblock %}
+
+{% block standalone_content %}
+<div class="login-body">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="bi bi-mortarboard-fill display-5 mb-2"></i>
+            <h4 class="fw-bold mb-1">Parent–Teacher Portal</h4>
+            <p class="mb-0 text-white-50 small">College Micro Project Lab Submission</p>
+        </div>
+
+        <div class="p-4 p-md-4">
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show small py-2 mb-3" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h5 class="fw-bold text-dark mb-3">Sign In to Your Account</h5>
+
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="mb-3">
+                    <label for="email" class="form-label text-muted small fw-bold">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" required autofocus>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label text-muted small fw-bold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                </button>
+            </form>
+
+            <!-- Quick Demo Credentials Box for College Lab Evaluation -->
+            <div class="demo-credentials-box mt-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="fw-bold text-dark small"><i class="bi bi-info-circle text-primary me-1"></i> Quick Demo Accounts</span>
+                    <span class="badge bg-secondary small">Lab Viva</span>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary text-start" onclick="fillCredentials('admin@ptportal.com', 'Admin@123')">
+                        <span class="badge badge-role-admin me-1">Admin</span> admin@ptportal.com
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary text-start" onclick="fillCredentials('teacher@ptportal.com', 'Teacher@123')">
+                        <span class="badge badge-role-teacher me-1">Teacher</span> teacher@ptportal.com
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary text-start" onclick="fillCredentials('parent@ptportal.com', 'Parent@123')">
+                        <span class="badge badge-role-parent me-1">Parent</span> parent@ptportal.com
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">Parent–Teacher Communication Portal &copy; 2026</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

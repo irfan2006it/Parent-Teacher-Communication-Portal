@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Mark Attendance - Teacher{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Student Attendance</h3>
+        <p class="text-muted mb-0">Record and track daily attendance for your classroom</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Attendance Marking Form -->
+    <div class="col-12 col-lg-4">
+        <div class="content-card">
+            <div class="content-card-header bg-light">
+                <h6 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>Record Attendance
+                </h6>
+            </div>
+            <div class="content-card-body">
+                <form action="{{ url_for('teacher_attendance') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label fw-semibold small">Select Student <span class="text-danger">*</span></label>
+                        <select class="form-select" id="student_id" name="student_id" required>
+                            <option value="">-- Choose Student --</option>
+                            {% for stu in students %}
+                            <option value="{{ stu.student_id }}">
+                                {{ stu.name }} ({{ stu.student_id }}) - Class {{ stu.class }}-{{ stu.section }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label fw-semibold small">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="date" name="date" value="{{ today_date }}" required>
+                        <div class="form-text">Defaults to today's date.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold small d-block">Status <span class="text-danger">*</span></label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="status" id="statusPresent" value="Present" checked>
+                            <label class="btn btn-outline-success" for="statusPresent">
+                                <i class="bi bi-check-circle me-1"></i> Present
+                            </label>
+
+                            <input type="radio" class="btn-check" name="status" id="statusAbsent" value="Absent">
+                            <label class="btn btn-outline-danger" for="statusAbsent">
+                                <i class="bi bi-x-circle me-1"></i> Absent
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-cloud-arrow-up me-1"></i> Submit Attendance
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance History Log -->
+    <div class="col-12 col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-journal-text text-primary me-2"></i>Recent Attendance Records ({{ attendance_records | length }})
+                </h5>
+            </div>
+            <div class="content-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if attendance_records %}
+                                {% for att in attendance_records %}
+                                <tr>
+                                    <td><span class="badge bg-light text-dark border font-monospace">{{ att.student_id }}</span></td>
+                                    <td class="fw-bold text-dark">{{ att.student_name }}</td>
+                                    <td>{{ att.date }}</td>
+                                    <td>
+                                        {% if att.status == 'Present' %}
+                                            <span class="badge badge-present"><i class="bi bi-check2"></i> Present</span>
+                                        {% else %}
+                                            <span class="badge badge-absent"><i class="bi bi-x-lg"></i> Absent</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-5">
+                                        No attendance entries logged yet.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

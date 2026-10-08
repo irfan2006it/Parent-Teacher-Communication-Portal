@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Child Marks & Report - Parent{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Academic Performance & Marks</h3>
+        <p class="text-muted mb-0">Grade report and exam evaluation for {{ child.name if child else 'your child' }}</p>
+    </div>
+</div>
+
+{% if child %}
+<!-- Academic Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="stat-card primary p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Average Score</span>
+            <h3 class="fw-bold text-dark mb-0 mt-1">{{ average_percentage }}%</h3>
+            <small class="text-muted">Calculated across all exams</small>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="stat-card secondary p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Total Exams Recorded</span>
+            <h3 class="fw-bold text-primary mb-0 mt-1">{{ marks_list | length }}</h3>
+            <small class="text-muted">Graded subjects & tests</small>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="stat-card {% if average_percentage >= 75 %}success{% else %}accent{% endif %} p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Performance Rating</span>
+            <h3 class="fw-bold text-dark mb-0 mt-1">
+                {% if average_percentage >= 85 %}Distinction (A+)
+                {% elif average_percentage >= 75 %}First Class (A)
+                {% elif average_percentage >= 60 %}Second Class (B)
+                {% elif average_percentage >= 40 %}Pass (C)
+                {% else %}Needs Improvement
+                {% endif %}
+            </h3>
+            <small class="text-muted">Grade classification</small>
+        </div>
+    </div>
+</div>
+
+<!-- Marks Breakdown Table -->
+<div class="content-card">
+    <div class="content-card-header">
+        <h5 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-file-earmark-check text-primary me-2"></i>Subject-wise Assessment Marks
+        </h5>
+        <span class="badge bg-light text-dark border font-monospace">{{ child.student_id }}</span>
+    </div>
+    <div class="content-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Exam / Test</th>
+                        <th>Marks Obtained / Total</th>
+                        <th>Percentage</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if marks_list %}
+                        {% for item in marks_list %}
+                        {% set pct = ((item.marks / item.total) * 100) | round(1) if item.total > 0 else 0 %}
+                        <tr>
+                            <td class="fw-bold text-dark">
+                                <i class="bi bi-book text-primary me-2"></i>{{ item.subject }}
+                            </td>
+                            <td>{{ item.exam }}</td>
+                            <td class="fw-semibold">{{ item.marks }} / {{ item.total }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-bold">{{ pct }}%</span>
+                                    <div class="progress flex-grow-1" style="height: 6px; max-width: 80px;">
+                                        <div class="progress-bar {% if pct >= 75 %}bg-success{% elif pct >= 50 %}bg-primary{% else %}bg-warning{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ pct }}%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if pct >= 80 %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Excellent</span>
+                                {% elif pct >= 60 %}
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Good</span>
+                                {% else %}
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Needs Attention</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                No examination marks entered yet by the class teacher.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="content-card p-5 text-center text-muted">
+    <p>No student linked to this parent account.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Child Attendance - Parent{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Attendance Records</h3>
+        <p class="text-muted mb-0">Daily classroom presence tracking for {{ child.name if child else 'your child' }}</p>
+    </div>
+</div>
+
+{% if child %}
+<!-- Attendance Metric Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card primary p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Total Days</span>
+            <h3 class="fw-bold text-dark mb-0 mt-1">{{ total_days }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card success p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Present Days</span>
+            <h3 class="fw-bold text-success mb-0 mt-1">{{ present_days }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card accent p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Absent Days</span>
+            <h3 class="fw-bold text-danger mb-0 mt-1">{{ absent_days }}</h3>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card secondary p-3">
+            <span class="text-muted small fw-semibold text-uppercase">Percentage</span>
+            <h3 class="fw-bold text-primary mb-0 mt-1">{{ attendance_percentage }}%</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Daily Attendance Table -->
+<div class="content-card">
+    <div class="content-card-header">
+        <h5 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-calendar3 text-primary me-2"></i>Daily Attendance Log
+        </h5>
+        <span class="badge {% if attendance_percentage >= 75 %}bg-success{% else %}bg-warning text-dark{% endif %}">
+            Status: {{ 'Satisfactory' if attendance_percentage >= 75 else 'Low Attendance Warning' }}
+        </span>
+    </div>
+    <div class="content-card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Student Name</th>
+                        <th>Class & Section</th>
+                        <th>Recorded Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if attendance_records %}
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td class="fw-semibold text-dark">{{ record.date }}</td>
+                            <td>{{ child.name }}</td>
+                            <td>Class {{ child.class }} - {{ child.section }}</td>
+                            <td>
+                                {% if record.status == 'Present' %}
+                                    <span class="badge badge-present"><i class="bi bi-check-circle-fill me-1"></i>Present</span>
+                                {% else %}
+                                    <span class="badge badge-absent"><i class="bi bi-x-circle-fill me-1"></i>Absent</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-5">
+                                No attendance records logged yet.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="content-card p-5 text-center text-muted">
+    <p>No student linked to this parent account.</p>
+</div>
+{% endif %}
+{% endblock %}

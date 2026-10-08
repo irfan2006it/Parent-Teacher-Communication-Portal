@@ -1,0 +1,458 @@
+/* ==========================================================================
+   Parent–Teacher Communication Portal - Custom Stylesheet
+   Color Palette:
+   - Primary: #1E3A8A (Navy)
+   - Secondary: #2563EB (Royal Blue)
+   - Accent: #F59E0B (Amber)
+   - Background: #F8FAFC (Slate Light)
+   - Text: #1E293B (Slate Dark)
+   ========================================================================== */
+
+:root {
+  --primary-color: #1E3A8A;
+  --primary-hover: #172554;
+  --secondary-color: #2563EB;
+  --secondary-hover: #1D4ED8;
+  --accent-color: #F59E0B;
+  --accent-hover: #D97706;
+  --bg-color: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+  --sidebar-width: 260px;
+  --success-color: #10B981;
+  --danger-color: #EF4444;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.portal-navbar {
+  background-color: var(--primary-color) !important;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.portal-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.3px;
+  color: #FFFFFF !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.portal-brand i {
+  color: var(--accent-color);
+  font-size: 1.4rem;
+}
+
+/* Layout with Sidebar */
+.portal-wrapper {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+.portal-sidebar {
+  width: var(--sidebar-width);
+  background: #FFFFFF;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.sidebar-profile {
+  padding: 1.5rem 1rem;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(37, 99, 235, 0.05));
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 auto 0.75rem auto;
+  border: 3px solid rgba(245, 158, 11, 0.4);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 1rem 0.5rem;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.sidebar-menu li {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-main);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-link i {
+  font-size: 1.15rem;
+  color: var(--secondary-color);
+  width: 22px;
+  text-align: center;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(37, 99, 235, 0.08);
+  color: var(--secondary-color);
+}
+
+.sidebar-link.active {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+}
+
+.sidebar-link.active i {
+  color: #FFFFFF;
+}
+
+/* Main Content Area */
+.portal-content {
+  flex-grow: 1;
+  padding: 1.75rem 2rem;
+  overflow-y: auto;
+  background-color: var(--bg-color);
+}
+
+/* Stat Cards */
+.stat-card {
+  border: none;
+  border-radius: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid var(--secondary-color);
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card.primary {
+  border-left-color: var(--primary-color);
+}
+
+.stat-card.secondary {
+  border-left-color: var(--secondary-color);
+}
+
+.stat-card.accent {
+  border-left-color: var(--accent-color);
+}
+
+.stat-card.success {
+  border-left-color: var(--success-color);
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-icon.primary {
+  background-color: rgba(30, 58, 138, 0.1);
+  color: var(--primary-color);
+}
+
+.stat-icon.secondary {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--secondary-color);
+}
+
+.stat-icon.accent {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--accent-color);
+}
+
+.stat-icon.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+/* Standard Content Card */
+.content-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+}
+
+.content-card-header {
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: #FFFFFF;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content-card-body {
+  padding: 1.4rem;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+.btn-portal {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #FFFFFF;
+}
+
+.btn-portal:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #FFFFFF;
+}
+
+.btn-accent {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #FFFFFF;
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #FFFFFF;
+}
+
+/* Badges */
+.badge-present {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+}
+
+.badge-absent {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+}
+
+.badge-role-admin {
+  background-color: #EDE9FE;
+  color: #5B21B6;
+}
+
+.badge-role-teacher {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.badge-role-parent {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+/* Tables */
+.table th {
+  background-color: #F8FAFC;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.85rem 1rem;
+}
+
+.table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(37, 99, 235, 0.02);
+}
+
+/* Messaging / Chat Interface */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+  background-color: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 0.85rem 1.15rem;
+  border-radius: 14px;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.chat-bubble.sent {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: #FFFFFF;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.received {
+  align-self: flex-start;
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-meta {
+  font-size: 0.75rem;
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.85;
+}
+
+.chat-bubble.sent .chat-meta {
+  color: #E2E8F0;
+  justify-content: flex-end;
+}
+
+.chat-bubble.received .chat-meta {
+  color: var(--text-muted);
+}
+
+.chat-sender-name {
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.chat-input-bar {
+  padding: 1rem;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Login Page Specific Styling */
+.login-body {
+  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #1E293B 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.login-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: #FFFFFF;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.login-header i {
+  color: var(--accent-color);
+}
+
+.demo-credentials-box {
+  background-color: #F8FAFC;
+  border: 1px dashed #CBD5E1;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .portal-sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: -260px;
+    transition: left 0.3s ease;
+  }
+
+  .portal-sidebar.show {
+    left: 0;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .portal-content {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student - Admin{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('admin_students') }}" class="text-decoration-none text-muted small">
+        <i class="bi bi-arrow-left"></i> Back to Students
+    </a>
+    <h3 class="fw-bold mt-1 text-dark">Edit Student Information</h3>
+</div>
+
+<div class="row">
+    <div class="col-12 col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>Update Student: {{ student.name }}
+                </h5>
+            </div>
+            <div class="content-card-body">
+                <form action="{{ url_for('admin_edit_student', student_id=student._id) }}" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label fw-semibold">Student Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ student.name }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="student_id" class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="student_id" name="student_id" value="{{ student.student_id }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="class_name" class="form-label fw-semibold">Class / Grade <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="class_name" name="class" value="{{ student.class }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="section" class="form-label fw-semibold">Section <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="section" name="section" value="{{ student.section }}" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="parent_id" class="form-label fw-semibold">Assign Parent</label>
+                            <select class="form-select" id="parent_id" name="parent_id">
+                                <option value="">-- No Parent Assigned --</option>
+                                {% for parent in parents %}
+                                <option value="{{ parent._id }}" {% if student.parent_id|string == parent._id|string %}selected{% endif %}>
+                                    {{ parent.name }} ({{ parent.email }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="teacher_id" class="form-label fw-semibold">Assign Teacher</label>
+                            <select class="form-select" id="teacher_id" name="teacher_id">
+                                <option value="">-- No Teacher Assigned --</option>
+                                {% for teacher in teachers %}
+                                <option value="{{ teacher._id }}" {% if student.teacher_id|string == teacher._id|string %}selected{% endif %}>
+                                    {{ teacher.name }} ({{ teacher.email }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 pt-2 border-top d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i> Update Changes
+                            </button>
+                            <a href="{{ url_for('admin_students') }}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

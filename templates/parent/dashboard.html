@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Parent Dashboard - Parent–Teacher Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Welcome, {{ current_user.name }}!</h3>
+        <p class="text-muted mb-0">Monitor your child's academic progress, attendance records, and teacher feedback</p>
+    </div>
+    {% if child %}
+    <a href="{{ url_for('parent_messages') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-chat-dots-fill me-1"></i> Message Teacher
+    </a>
+    {% endif %}
+</div>
+
+{% if child %}
+<!-- Child Quick Info Banner -->
+<div class="row g-3 mb-4">
+    <!-- Child Information Card -->
+    <div class="col-12 col-md-4">
+        <div class="stat-card primary p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Child Information</span>
+                    <h4 class="fw-bold text-dark mb-1 mt-2">{{ child.name }}</h4>
+                    <p class="text-muted small mb-0">Class: <strong>{{ child.class }} - {{ child.section }}</strong></p>
+                    <small class="badge bg-light text-dark border font-monospace mt-1">ID: {{ child.student_id }}</small>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-top">
+                <a href="{{ url_for('parent_child') }}" class="small text-decoration-none fw-semibold">
+                    View Complete Profile &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Percentage Card -->
+    <div class="col-12 col-md-4">
+        <div class="stat-card {% if attendance_pct >= 75 %}success{% else %}accent{% endif %} p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Attendance</span>
+                    <h2 class="fw-bold text-dark mb-1 mt-2">{{ attendance_pct }}%</h2>
+                    <p class="text-muted small mb-0">{{ present_days }} of {{ total_days }} sessions attended</p>
+                </div>
+                <div class="stat-icon {% if attendance_pct >= 75 %}success{% else %}accent{% endif %}">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-top">
+                <a href="{{ url_for('parent_attendance') }}" class="small text-decoration-none fw-semibold">
+                    View Attendance Log &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Marks Card -->
+    <div class="col-12 col-md-4">
+        <div class="stat-card secondary p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Average Marks</span>
+                    <h2 class="fw-bold text-dark mb-1 mt-2">{{ average_marks_pct }}%</h2>
+                    <p class="text-muted small mb-0">Across {{ marks_count }} recorded exam(s)</p>
+                </div>
+                <div class="stat-icon secondary">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+            </div>
+            <div class="mt-3 pt-2 border-top">
+                <a href="{{ url_for('parent_marks') }}" class="small text-decoration-none fw-semibold">
+                    View Marks Breakdown &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Assigned Teacher & Communication Summary -->
+    <div class="col-12 col-lg-6">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-person-video3 text-primary me-2"></i>Classroom Teacher
+                </h5>
+            </div>
+            <div class="content-card-body">
+                {% if teacher %}
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="profile-avatar mb-0" style="width: 48px; height: 48px;">
+                        {{ teacher.name[:1] | upper }}
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">{{ teacher.name }}</h6>
+                        <small class="text-muted"><i class="bi bi-envelope me-1"></i>{{ teacher.email }}</small>
+                    </div>
+                </div>
+                <p class="text-muted small">You can message the teacher directly for inquiries about {{ child.name }}'s performance, attendance, or behavior.</p>
+                <a href="{{ url_for('parent_messages') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-chat-dots me-1"></i> Open Chat with Teacher
+                    {% if unread_messages > 0 %}
+                    <span class="badge bg-danger ms-1">{{ unread_messages }} new</span>
+                    {% endif %}
+                </a>
+                {% else %}
+                <p class="text-muted small mb-0">No teacher has been assigned to {{ child.name }} yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Marks Preview -->
+    <div class="col-12 col-lg-6">
+        <div class="content-card">
+            <div class="content-card-header">
+                <h5 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-file-earmark-bar-graph text-secondary me-2"></i>Recent Test Scores
+                </h5>
+                <a href="{{ url_for('parent_marks') }}" class="btn btn-sm btn-outline-secondary">All Marks</a>
+            </div>
+            <div class="content-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Exam</th>
+                                <th>Score</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if recent_marks %}
+                                {% for m in recent_marks %}
+                                {% set pct = ((m.marks / m.total) * 100) | round(1) if m.total > 0 else 0 %}
+                                <tr>
+                                    <td class="fw-bold text-dark">{{ m.subject }}</td>
+                                    <td>{{ m.exam }}</td>
+                                    <td>{{ m.marks }}/{{ m.total }}</td>
+                                    <td>
+                                        <span class="badge {% if pct >= 75 %}bg-success{% elif pct >= 50 %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                            {{ pct }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4 small">No test scores recorded yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Case when no child is assigned to parent account -->
+<div class="content-card p-5 text-center">
+    <i class="bi bi-info-circle display-4 text-primary d-block mb-3"></i>
+    <h4>No Child Linked to this Account</h4>
+    <p class="text-muted mb-3">Your parent account is registered, but no student has been assigned to you by the School Admin yet.</p>
+    <p class="small text-muted">Please contact the school administration or provide your email <code>{{ current_user.email }}</code> to link your child.</p>
+</div>
+{% endif %}
+{% endblock %}
